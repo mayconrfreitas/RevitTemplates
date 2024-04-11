@@ -6,7 +6,7 @@ sealed partial class Build : NukeBuild
 {
     string[] Configurations;
 
-    [Parameter] string GitHubToken;
+    [Secret] [Parameter] string GitHubToken;
     [GitRepository] readonly GitRepository GitRepository;
     [Solution(GenerateProjects = true)] readonly Solution Solution;
 
@@ -40,6 +40,8 @@ sealed partial class Build : NukeBuild
 
     static void TrimEmptyLines(StringBuilder builder)
     {
+        if (builder.Length == 0) return;
+
         while (builder[^1] == '\r' || builder[^1] == '\n')
         {
             builder.Remove(builder.Length - 1, 1);

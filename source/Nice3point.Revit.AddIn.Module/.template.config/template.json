@@ -1,0 +1,108 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Nice3point",
+  "name": "Revit AddIn Module",
+  "shortName": "revit-addin-module",
+  "identity": "Nice3point.Revit.AddIn.Module",
+  "defaultName": "RevitAddIn",
+  "sourceName": "Nice3point.Revit.AddIn",
+  "description": "Template for creating an empty module for Revit add-in application",
+  "classifications": [
+    "Revit",
+    "AddIn",
+    "Library",
+    "Module"
+  ],
+  "tags": {
+    "type": "project",
+    "language": "C#",
+    "platform": ".NET"
+  },
+  "preferNameDirectory": true,
+  "placeholderFilename": "keep.folder",
+  "symbols": {
+    "window": {
+      "type": "parameter",
+      "displayName": "User interface",
+      "datatype": "choice",
+      "description": "The type of window to be used by the add-in",
+      "choices": [
+        {
+          "choice": "none",
+          "displayName": "None",
+          "description": "The add-in will not use windows"
+        },
+        {
+          "choice": "modal",
+          "displayName": "Modal",
+          "description": "A modal window that blocks Revit until the user closes the window"
+        },
+        {
+          "choice": "modeless",
+          "displayName": "Modeless",
+          "description": "A modeless window does not block any other window while it is visible"
+        }
+      ],
+      "defaultValue": "modal"
+    },
+    "ioc": {
+      "type": "parameter",
+      "displayName": "Inject dependencies",
+      "datatype": "bool",
+      "description": "Inject dependencies into a command to call from the host application. Applies if the user interface is enabled",
+      "defaultValue": "false",
+      "isEnabled": "window != \"none\""
+    },
+    "NoWindow": {
+      "type": "computed",
+      "value": "window == \"none\""
+    },
+    "Modal": {
+      "type": "computed",
+      "value": "window == \"modal\""
+    },
+    "Modeless": {
+      "type": "computed",
+      "value": "window == \"modeless\""
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "NoWindow",
+          "exclude": [
+            "Models/**",
+            "Views/**",
+            "ViewModels/**"
+          ]
+        },
+        {
+          "condition": "!Modeless",
+          "exclude": [
+            "Utils/WindowController.cs"
+          ]
+        },
+        {
+          "condition": "NoWindow",
+          "exclude": [
+            "Core/RevitShell.cs",
+            "Commands/**"
+          ]
+        },
+        {
+          "condition": "ioc",
+          "exclude": [
+            "Commands/StartupCommand.cs"
+          ]
+        },
+        {
+          "condition": "!ioc",
+          "exclude": [
+            "Commands/ShowWindowComponent.cs"
+          ]
+        }
+      ]
+    }
+  ]
+}

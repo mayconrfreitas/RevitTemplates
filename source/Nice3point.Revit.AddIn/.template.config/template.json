@@ -6,11 +6,11 @@
   "identity": "Nice3point.Revit.AddIn",
   "defaultName": "RevitAddIn",
   "sourceName": "Nice3point.Revit.AddIn",
-  "description": "Template for creating a Revit add-in",
+  "description": "Template for creating a single project Revit add-in",
   "classifications": [
-    "Library",
     "Revit",
-    "AddIn"
+    "AddIn",
+    "Library"
   ],
   "tags": {
     "type": "project",
@@ -23,77 +23,118 @@
     "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
   ],
   "symbols": {
-    "ApplicationType": {
+    "addin": {
       "type": "parameter",
       "displayName": "Add-In type",
       "datatype": "choice",
       "description": "The type of add-in to be registered in the .addin manifest",
       "choices": [
         {
-          "choice": "Application",
+          "choice": "app",
+          "displayName": "Application",
           "description": "Registers the add-in in the manifest with the Application type"
         },
         {
-          "choice": "Command",
+          "choice": "command",
+          "displayName": "Command",
           "description": "Registers the add-in in the manifest with the Command type"
         }
       ],
-      "defaultValue": "Application"
+      "defaultValue": "app"
     },
-    "CommandStyle": {
-      "type": "computed",
-      "value": "(ApplicationType == \"Command\")"
-    },
-    "ApplicationStyle": {
-      "type": "computed",
-      "value": "(ApplicationType == \"Application\")"
-    },
-    "WindowType": {
+    "window": {
       "type": "parameter",
       "displayName": "User interface",
       "datatype": "choice",
       "description": "The type of window to be used by the add-in",
       "choices": [
         {
-          "choice": "None",
+          "choice": "none",
+          "displayName": "None",
           "description": "The add-in will not use windows"
         },
         {
-          "choice": "Modal",
+          "choice": "modal",
+          "displayName": "Modal",
           "description": "A modal window that blocks Revit until the user closes the window"
         },
         {
-          "choice": "Modeless",
+          "choice": "modeless",
+          "displayName": "Modeless",
           "description": "A modeless window does not block any other window while it is visible"
         }
       ],
-      "defaultValue": "Modal"
+      "defaultValue": "modal"
     },
-    "Logger": {
+    "ioc": {
+      "type": "parameter",
+      "displayName": "IoC",
+      "datatype": "choice",
+      "description": "Supports the dependency injection (DI) software design pattern which is a technique for achieving Inversion of Control (IoC) between classes and their dependencies",
+      "choices": [
+        {
+          "choice": "disabled",
+          "displayName": "Disabled",
+          "description": "The add-in will not use IoC"
+        },
+        {
+          "choice": "container",
+          "displayName": "Service container",
+          "description": "Use Microsoft.Extensions.DependencyInjection implementation"
+        },
+        {
+          "choice": "host",
+          "displayName": "Hosting",
+          "description": "Use Microsoft.Extensions.Hosting implementation"
+        }
+      ],
+      "defaultValue": "disabled"
+    },
+    "log": {
       "type": "parameter",
       "displayName": "Serilog support",
       "dataType": "bool",
       "description": "Logging support for the add-in",
       "defaultValue": "false"
     },
+    "Command": {
+      "type": "computed",
+      "value": "addin == \"command\""
+    },
+    "Application": {
+      "type": "computed",
+      "value": "addin == \"app\""
+    },
     "NoWindow": {
       "type": "computed",
-      "value": "(WindowType == \"None\")"
+      "value": "window == \"none\""
     },
-    "ModalWindow": {
+    "Modal": {
       "type": "computed",
-      "value": "(WindowType == \"Modal\")"
+      "value": "window == \"modal\""
     },
-    "ModelessWindow": {
+    "Modeless": {
       "type": "computed",
-      "value": "(WindowType == \"Modeless\")"
+      "value": "window == \"modeless\""
+    },
+    "Container": {
+      "type": "computed",
+      "value": "ioc == \"container\""
+    },
+    "Hosting": {
+      "type": "computed",
+      "value": "ioc == \"host\""
+    },
+    "UseIoc": {
+      "type": "computed",
+      "value": "ioc != \"disabled\""
     }
   },
   "sources": [
     {
       "modifiers": [
         {
-          "condition": "(CommandStyle)",
+          "condition": "Command",
           "exclude": [
             "Application.cs",
             "Resources/Icons/RibbonIcon16.png",
@@ -101,7 +142,7 @@
           ]
         },
         {
-          "condition": "(NoWindow)",
+          "condition": "NoWindow",
           "exclude": [
             "Models/**",
             "Views/**",
@@ -109,9 +150,21 @@
           ]
         },
         {
-          "condition": "(!ModelessWindow)",
+          "condition": "!Modeless",
           "exclude": [
             "Utils/WindowController.cs"
+          ]
+        },
+        {
+          "condition": "!UseIoc",
+          "exclude": [
+            "Host.cs"
+          ]
+        },
+        {
+          "condition": "!log || !UseIoc",
+          "exclude": [
+            "Config/LoggerConfigurator.cs"
           ]
         }
       ]
@@ -119,17 +172,17 @@
   ],
   "primaryOutputs": [
     {
-      "condition": "(ApplicationStyle)",
+      "condition": "Application",
       "path": "Application.cs"
     },
     {
-      "condition": "(CommandStyle)",
-      "path": "Commands/Command.cs"
+      "condition": "Command",
+      "path": "Commands/StartupCommand.cs"
     }
   ],
   "postActions": [
     {
-      "condition": "(ApplicationStyle)",
+      "condition": "Application",
       "description": "Opens Application.cs in the editor",
       "manualInstructions": [],
       "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
@@ -139,7 +192,7 @@
       "continueOnError": true
     },
     {
-      "condition": "(CommandStyle)",
+      "condition": "Command",
       "description": "Opens Command.cs in the editor",
       "manualInstructions": [],
       "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
@@ -151,29 +204,6 @@
   ],
   "SpecialCustomOperations": {
     "**/*.addin": {
-      "operations": [
-        {
-          "type": "conditional",
-          "configuration": {
-            "actionableIf": [
-              "#if"
-            ],
-            "actionableElse": [
-              "#else"
-            ],
-            "actionableElseif": [
-              "#elseif"
-            ],
-            "endif": [
-              "#endif"
-            ],
-            "trim": "true",
-            "wholeLine": "true"
-          }
-        }
-      ]
-    },
-    "**/*.csproj": {
       "operations": [
         {
           "type": "conditional",

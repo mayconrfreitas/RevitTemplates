@@ -1,23 +1,27 @@
-﻿using Nuke.Common.Git;
+﻿using System.IO.Enumeration;
+using Nuke.Common.Git;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 sealed partial class Build
 {
     Target Pack => _ => _
-        .DependsOn(Compile)
-        .OnlyWhenStatic(() => GitRepository.IsOnMainOrMasterBranch())
+        .DependsOn(Clean)
+        .OnlyWhenStatic(() => IsLocalBuild || GitRepository.IsOnMainOrMasterBranch())
         .Executes(() =>
         {
             ValidateRelease();
 
+            var readme = CreateNugetReadme();
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetPack(settings => settings
                     .SetConfiguration(configuration)
                     .SetVersion(Version)
                     .SetOutputDirectory(ArtifactsDirectory)
-                    .SetVerbosity(DotNetVerbosity.Minimal)
+                    .SetVerbosity(DotNetVerbosity.minimal)
                     .SetPackageReleaseNotes(CreateNugetChangelog()));
+
+            RestoreReadme(readme);
         });
 
     string CreateNugetChangelog()
@@ -36,5 +40,40 @@ sealed partial class Build
         return value
             .Replace(";", "%3B")
             .Replace(",", "%2C");
+    }
+
+    List<string> GlobBuildConfigurations()
+    {
+        var configurations = Solution.Configurations
+            .Select(pair => pair.Key)
+            .Select(config => config.Remove(config.LastIndexOf('|')))
+            .Where(config => Configurations.Any(wildcard => FileSystemName.MatchesSimpleExpression(wildcard, config)))
+            .ToList();
+
+        Assert.NotEmpty(configurations, $"No solution configurations have been found. Pattern: {string.Join(" | ", Configurations)}");
+        return configurations;
+    }
+
+    string CreateNugetReadme()
+    {
+        var readmePath = Solution.Directory / "Readme.md";
+        var readme = File.ReadAllText(readmePath);
+
+        var startSymbol = "<p";
+        var endSymbol = "</p>\r\n\r\n";
+        var logoStartIndex = readme.IndexOf(startSymbol, StringComparison.Ordinal);
+        var logoEndIndex = readme.IndexOf(endSymbol, StringComparison.Ordinal);
+
+        var nugetReadme = readme.Remove(logoStartIndex, logoEndIndex - logoStartIndex + endSymbol.Length);
+        File.WriteAllText(readmePath, nugetReadme);
+
+        return readme;
+    }
+
+    void RestoreReadme(string readme)
+    {
+        var readmePath = Solution.Directory / "Readme.md";
+
+        File.WriteAllText(readmePath, readme);
     }
 }

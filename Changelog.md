@@ -1,3 +1,24 @@
+# 4.0.2
+
+- Integrate the latest Revit.Build.Tasks features
+- Cleanup csproj files
+
+# 4.0.1
+
+- Revit 2025 support
+- Inversion of Control support
+- Nuke 8.0.0 support
+- New icons
+- New templates for single dll applications and modular solutions
+- New samples https://github.com/Nice3point/RevitTemplates/tree/develop/samples
+- Wiki updated https://github.com/Nice3point/RevitTemplates/wiki/Templates
+- Wiki updated https://github.com/Nice3point/RevitTemplates/wiki/Multiple-Revit-Versions
+- Jetbrains Rider don't respect solution templates for now. Please use CLI or VS22
+
+# 3.2.2
+
+- Fix Github release version validation
+
 # 3.2.1
 
 - Fix Github release version validation

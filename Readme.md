@@ -1,35 +1,36 @@
-<h3 align="center"><img src="https://user-images.githubusercontent.com/20504884/147851930-168b19cc-2a41-444e-8e03-c940418a2bb2.png" width="500px"></h3>
-
-# Create your Add-In for Revit on the .Net platform now
-
 <p align="center">
-  <a href="https://www.nuget.org/packages/Nice3point.Revit.Templates"><img src="https://img.shields.io/nuget/v/Nice3point.Revit.Templates?style=for-the-badge"></a>
-  <a href="https://www.nuget.org/packages/Nice3point.Revit.Templates"><img src="https://img.shields.io/nuget/dt/Nice3point.Revit.Templates?style=for-the-badge"></a>
-  <a href="https://github.com/Nice3point/RevitTemplate/commits/main"><img src="https://img.shields.io/github/last-commit/Nice3point/RevitTemplate/develop?style=for-the-badge"></a>
+    <picture>
+        <source media="(prefers-color-scheme: dark)" width="750" srcset="https://github.com/Nice3point/RevitTemplates/assets/20504884/cb0992f1-927f-4937-a87b-0e9657318c05">
+        <img alt="RevitLookup" width="750" src="https://github.com/Nice3point/RevitTemplates/assets/20504884/ddeb2dd2-e3e9-46f8-a643-4176a09c8560">
+    </picture>
 </p>
+
+## Create your Add-In for Revit on the .Net platform
+
+[![Nuget](https://img.shields.io/nuget/vpre/Nice3point.Revit.Templates?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Templates)
+[![Downloads](https://img.shields.io/nuget/dt/Nice3point.Revit.Templates?style=for-the-badge)](https://www.nuget.org/packages/Nice3point.Revit.Templates)
+[![Last Commit](https://img.shields.io/github/last-commit/Nice3point/RevitTemplate/develop?style=for-the-badge)](https://github.com/Nice3point/RevitTemplate/commits/main)
 
 This repository contains a project templates for creating Revit Add-In
 
 ## Template Features
 
-- Building a project for all Revit versions
-- Support for automatic installer creation
-- Support for Modal and Modeless windows
+- Revit multi-version support
+- Using the MVVM pattern with Modal and Modeless windows
 - Support for Application and Command add-in types
-- Support for Azure DevOps pipelines and GitHub Actions
-- Support for automatic publishing of releases to GitHub
-- Support for bundle to publish an application to the Autodesk Store
-- Support for the MVVM pattern
-- Support for add-in logging
+- Automatic GitHub releases
+- Creating a multi versions installer
+- Creating a bundle to publish an application into Autodesk Store or Design Automation
+- Azure DevOps pipelines and GitHub Actions
+- Dependency Injection
+- Add-in logging
 
 ## Installation
 
 1. Install the latest [.Net SDK](https://dotnet.microsoft.com/download)
-2. Run `dotnet new -i Nice3point.Revit.Templates` to install the project templates
+2. Run `dotnet new install Nice3point.Revit.Templates` to install the project templates
 
 ## Usage
 
 - To create a project use the IDE or run `dotnet new`
-- To create a release run `nuke`
-- Read changelog in [Discussions](https://github.com/Nice3point/RevitTemplates/discussions/categories/announcements)
-- For more help read [Wiki](https://github.com/Nice3point/RevitTemplates/wiki)
+- For description, read [Wiki](https://github.com/Nice3point/RevitTemplates/wiki)

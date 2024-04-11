@@ -24,11 +24,8 @@ Global
 		{114BF9D5-DD32-468D-9877-4CCB85204598}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(RiderSharedRunConfigurations) = postSolution
-		File = Templates\Nice3point.Revit.Solution\.run\Nuke.run.xml
-		File = Templates\Nice3point.Revit.Solution\.run\Nuke Plan.run.xml
-		File = Templates\Nice3point.Revit.Solution\.run\Nuke Clean.run.xml
-		File = source\Nice3point.Revit.Solution\.run\Nuke Clean.run.xml
-		File = source\Nice3point.Revit.Solution\.run\Nuke Plan.run.xml
-		File = source\Nice3point.Revit.Solution\.run\Nuke.run.xml
+		File = source\Nice3point.Revit.AddIn.Solution\.run\Nuke Clean.run.xml
+		File = source\Nice3point.Revit.AddIn.Solution\.run\Nuke Plan.run.xml
+		File = source\Nice3point.Revit.AddIn.Solution\.run\Nuke.run.xml
 	EndGlobalSection
 EndGlobal
